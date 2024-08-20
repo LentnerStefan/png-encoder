@@ -1,17 +1,42 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { multiply } from 'react-native-png-encoder';
+import {
+  useCameraPermission,
+  useCameraDevice,
+  useCameraFormat,
+  Camera,
+} from 'react-native-vision-camera';
 
 export default function App() {
-  const [result, setResult] = useState<number | undefined>();
-
+  // TODO, remove me
+  console.log(multiply);
+  const permission = useCameraPermission();
   useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+    permission.requestPermission();
+  }, [permission]);
+
+  // Vision camera hooks
+  const device = useCameraDevice('back');
+  const format = useCameraFormat(device, [
+    {
+      videoResolution: 'max',
+    },
+    { fps: 'max' },
+  ]);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      {permission.hasPermission && !!device && !!format && (
+        <Camera
+          style={styles.camera}
+          isActive
+          enableFpsGraph
+          device={device}
+          format={format}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 }
@@ -19,12 +44,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+  camera: {
+    flex: 1,
   },
 });
