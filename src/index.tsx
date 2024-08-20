@@ -1,5 +1,5 @@
-declare function multiply(a: number, b: number): Promise<number>;
+declare function multiply(array: ArrayBuffer): Promise<number>;
 
-export function multiplyA(a: number, b: number): Promise<number> {
-  return multiply(a, b);
+export function multiplyA(array: Uint8Array): Promise<number> {
+  return multiply(array.buffer);
 }

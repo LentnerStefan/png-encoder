@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
-import { multiplyA } from 'react-native-png-encoder';
+import { StyleSheet, View } from 'react-native';
+// import { multiplyA } from 'react-native-png-encoder';
+import { useResizePlugin } from 'vision-camera-resize-plugin';
 import {
   useCameraPermission,
   useCameraDevice,
   useCameraFormat,
   Camera,
+  useFrameProcessor,
 } from 'react-native-vision-camera';
+
+const RESIZE_FACTOR = 4;
 
 export default function App() {
   // TODO, remove me
@@ -25,18 +29,46 @@ export default function App() {
     { fps: 'max' },
   ]);
 
-  const handlePress = async () => {
-    const result = multiplyA(6, 2);
-    console.log('multiply result:', result);
-  };
+  const { resize } = useResizePlugin();
+
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet';
+
+    const side = Math.min(frame.width, frame.height) / RESIZE_FACTOR;
+    const centerPoint = {
+      x: frame.width / 2,
+      y: frame.height / 2,
+    };
+    const cropSquare = {
+      x: Math.round(centerPoint.x - side / 2),
+      y: Math.round(centerPoint.y - side / 2),
+      width: side,
+      height: side,
+    };
+
+    const resizedFrame = resize(frame, {
+      dataType: 'uint8',
+      pixelFormat: 'rgb',
+      scale: {
+        width: cropSquare.width,
+        height: cropSquare.height,
+      },
+      crop: {
+        x: cropSquare.x,
+        y: cropSquare.y,
+        width: cropSquare.width,
+        height: cropSquare.height,
+      },
+    });
+    const start = performance.now();
+    //@ts-ignore
+    multiply(resizedFrame.buffer);
+    console.log(`Took ${Math.round(performance.now() - start)}ms`);
+    // const toto = new Uint8Array(test);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handlePress}>
-        <Text style={{ marginTop: 64, textAlign: 'center', color: 'black' }}>
-          Click me
-        </Text>
-      </TouchableOpacity>
       {permission.hasPermission && !!device && !!format && (
         <Camera
           style={styles.camera}
@@ -44,6 +76,7 @@ export default function App() {
           enableFpsGraph
           device={device}
           format={format}
+          frameProcessor={frameProcessor}
           resizeMode="contain"
         />
       )}

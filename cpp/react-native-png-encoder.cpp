@@ -16,16 +16,17 @@ void installSequel(jsi::Runtime& jsiRuntime) {
     // Then you get another instance of the runtime to use inside the function, a "this" value from the javascript world, a pointer to the arguments (you can treat it as an array) and finally a count for the number of arguments
     // Finally the function needs to return a jsi::Value (read JavaScript value)
     [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-
-      // the jsi::Value has a lot of helper methods for you to manipulate the data
-      if(!arguments[0].isNumber() || !arguments[1].isNumber()) {
-          jsi::JSError(runtime, "Non number arguments passed to sequel");
-      }
-      double res = 42;
-      return jsi::Value(res);
+        if(!arguments[0].isObject()){
+            throw jsi::JSError(runtime,"Invalid parameter provided");
+        }
+        auto rgbBufferObj = arguments[0].asObject(runtime);
+        if(!rgbBufferObj.isArrayBuffer(runtime)){
+            throw jsi::JSError(runtime,"Invalid parameter provided");
+        }
+        jsi::ArrayBuffer rgbBuffer = rgbBufferObj.getArrayBuffer(runtime);
+        return rgbBuffer;
     }
   );
-
   // Registers the function on the global object
   jsiRuntime.global().setProperty(jsiRuntime, "multiply", std::move(multiply));
 }
