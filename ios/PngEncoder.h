@@ -10,6 +10,8 @@
 #import <React/RCTBridgeModule.h>
 
 @interface PngEncoder : NSObject <RCTBridgeModule>
+
+@property(nonatomic, assign) BOOL setBridgeOnMainQueue;
 #endif
 
 @end

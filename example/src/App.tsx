@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { multiply } from 'react-native-png-encoder';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { multiplyA } from 'react-native-png-encoder';
 import {
   useCameraPermission,
   useCameraDevice,
@@ -10,8 +10,8 @@ import {
 
 export default function App() {
   // TODO, remove me
-  console.log(multiply);
   const permission = useCameraPermission();
+
   useEffect(() => {
     permission.requestPermission();
   }, [permission]);
@@ -25,8 +25,18 @@ export default function App() {
     { fps: 'max' },
   ]);
 
+  const handlePress = async () => {
+    const result = multiplyA(6, 2);
+    console.log('multiply result:', result);
+  };
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handlePress}>
+        <Text style={{ marginTop: 64, textAlign: 'center', color: 'black' }}>
+          Click me
+        </Text>
+      </TouchableOpacity>
       {permission.hasPermission && !!device && !!format && (
         <Camera
           style={styles.camera}

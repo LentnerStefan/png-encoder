@@ -1,8 +1,10 @@
 #ifndef PNGENCODER_H
 #define PNGENCODER_H
 
-namespace pngencoder {
-  double multiply(double a, double b);
-}
+#include <jsi/jsilib.h>
+#include <jsi/jsi.h>
+
+void installSequel(facebook::jsi::Runtime& jsiRuntime);
+void cleanUpSequel();
 
 #endif /* PNGENCODER_H */

@@ -1,19 +1,34 @@
 #import "PngEncoder.h"
+#import <React/RCTBridge+Private.h>
+#import <React/RCTUtils.h>
+#import "react-native-png-encoder/react-native-png-encoder.h"
+
 
 @implementation PngEncoder
+
+@synthesize bridge=_bridge;
+@synthesize methodQueue = _methodQueue;
+
 RCT_EXPORT_MODULE()
 
-// Example method
-// See // https://reactnative.dev/docs/native-modules-ios
-RCT_EXPORT_METHOD(multiply:(double)a
-                  b:(double)b
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-{
-    NSNumber *result = @(pngencoder::multiply(a, b));
-
-    resolve(result);
++ (BOOL)requiresMainQueueSetup {
+  return YES;
 }
 
+- (void)setBridge:(RCTBridge *)bridge {
+  _bridge = bridge;
+  _setBridgeOnMainQueue = RCTIsMainQueue();
+
+  RCTCxxBridge *cxxBridge = (RCTCxxBridge *)self.bridge;
+  if (!cxxBridge.runtime) {
+    return;
+  }
+
+    installSequel(*(facebook::jsi::Runtime *)cxxBridge.runtime);
+}
+
+- (void)invalidate {
+  cleanUpSequel();
+}
 
 @end
