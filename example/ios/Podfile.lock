@@ -7,7 +7,6 @@ PODS:
   - hermes-engine (0.75.2):
     - hermes-engine/Pre-built (= 0.75.2)
   - hermes-engine/Pre-built (0.75.2)
-  - libpng (1.6.35)
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1242,7 +1241,6 @@ PODS:
     - DoubleConversion
     - glog
     - hermes-engine
-    - libpng (~> 1.6.35)
     - RCT-Folly (= 2024.01.01.00)
     - RCTRequired
     - RCTTypeSafety
@@ -1633,7 +1631,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - libpng
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1778,7 +1775,6 @@ SPEC CHECKSUMS:
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: 69ef571f3de08433d766d614c73a9838a06bf7eb
   hermes-engine: 3b6e0717ca847e2fc90a201e59db36caf04dee88
-  libpng: c490b0523e94f78697f83ad434fbaf715050e15b
   RCT-Folly: 4464f4d875961fce86008d45f4ecf6cef6de0740
   RCTDeprecation: 34cbf122b623037ea9facad2e92e53434c5c7422
   RCTRequired: 24c446d7bcd0f517d516b6265d8df04dc3eb1219
@@ -1808,7 +1804,7 @@ SPEC CHECKSUMS:
   React-logger: 8db32983d75dc2ad54f278f344ccb9b256e694fc
   React-Mapbuffer: 1c08607305558666fd16678b85ef135e455d5c96
   React-microtasksnativemodule: 87b8de96f937faefece8afd2cb3a518321b2ef99
-  react-native-png-encoder: 7decee7e5696fa578b5a4d108813ef0eea0b66d3
+  react-native-png-encoder: 45fc812f1cb3fc8fd94e764d0a97f7898f860ffa
   react-native-worklets-core: f51430dd07bf5343d4918d28a4bb00fe8f98b982
   React-nativeconfig: 57781b79e11d5af7573e6f77cbf1143b71802a6d
   React-NativeModulesApple: 7ff2e2cfb2e5fa5bdedcecf28ce37e696c6ef1e1
