@@ -2,6 +2,7 @@
 // sstream contains functions to manipulate strings in C++
 #include <sstream>
 #include "png.h"
+#include "MutableRawBuffer.h"
 
 // The namespace allows for syntactic sugar around the JSI objects. ex. call: jsi::Function instead of facebook::jsi::Function
 using namespace facebook;
@@ -97,9 +98,13 @@ void installSequel(jsi::Runtime& jsiRuntime) {
 
         png_destroy_write_struct(&png_ptr, &info_ptr);
         
-//        jsi::ArrayBuffer pngArrayBuffer = jsi::ArrayBuffer(runtime, pngBufferPtr);
-        return rgbBuffer;
-        }
+        // Convert pngBuffer to a jsi::ArrayBuffer
+        size_t pngSize = pngBuffer.size();
+        auto mutableBuffer = std::make_shared<vision::MutableRawBuffer>(pngSize);
+        std::memcpy(mutableBuffer->data(), pngBuffer.data(), pngSize);
+        jsi::ArrayBuffer arrayBuffer(runtime, mutableBuffer);
+        return arrayBuffer; // Return the ArrayBuffer to JavaScript
+    }
   );
   // Registers the function on the global object
   jsiRuntime.global().setProperty(jsiRuntime, "multiply", std::move(multiply));

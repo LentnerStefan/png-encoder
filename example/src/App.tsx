@@ -58,16 +58,18 @@ export default function App() {
         height: cropSquare.height,
       },
     });
+
     const start = performance.now();
-    console.log('Size before', resizedFrame.byteLength / (1024 * 1024));
+    // console.log('Size before', resizedFrame.byteLength / (1024 * 1024));
     //@ts-ignore
-    const pngBuffer: ArrayBuffer = multiply(
+    const pngBuffer: Buffer = multiply(
       resizedFrame.buffer,
       cropSquare.width,
       cropSquare.height
     );
-    console.log('Size after', pngBuffer.byteLength / (1024 * 1024));
-    console.log(`Took ${Math.round(performance.now() - start)}ms`);
+    console.log(
+      `Before: ${resizedFrame.byteLength / (1024 * 1024)}MB; After: ${new Uint8Array(pngBuffer).byteLength / (1024 * 1024)}MB; Took: ${Math.round(performance.now() - start)}ms`
+    );
   }, []);
 
   return (
