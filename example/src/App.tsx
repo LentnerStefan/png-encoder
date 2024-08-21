@@ -10,8 +10,6 @@ import {
   useFrameProcessor,
 } from 'react-native-vision-camera';
 
-const RESIZE_FACTOR = 4;
-
 export default function App() {
   // TODO, remove me
   const permission = useCameraPermission();
@@ -34,7 +32,7 @@ export default function App() {
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
 
-    const side = Math.min(frame.width, frame.height) / RESIZE_FACTOR;
+    const side = 504;
     const centerPoint = {
       x: frame.width / 2,
       y: frame.height / 2,
@@ -61,10 +59,15 @@ export default function App() {
       },
     });
     const start = performance.now();
+    console.log('Size before', resizedFrame.byteLength / (1024 * 1024));
     //@ts-ignore
-    multiply(resizedFrame.buffer);
+    const pngBuffer: ArrayBuffer = multiply(
+      resizedFrame.buffer,
+      cropSquare.width,
+      cropSquare.height
+    );
+    console.log('Size after', pngBuffer.byteLength / (1024 * 1024));
     console.log(`Took ${Math.round(performance.now() - start)}ms`);
-    // const toto = new Uint8Array(test);
   }, []);
 
   return (
