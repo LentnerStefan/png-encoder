@@ -62,16 +62,15 @@ export default function App() {
     const start = performance.now();
     // console.log('Size before', resizedFrame.byteLength / (1024 * 1024));
     //@ts-ignore
-    const pngBuffer: Buffer = multiply(
+    let pngBuffer: Buffer | null = multiply(
       resizedFrame.buffer,
       cropSquare.width,
       cropSquare.height
     );
     console.log(
-      `Before: ${resizedFrame.byteLength / (1024 * 1024)}MB; After: ${new Uint8Array(pngBuffer).byteLength / (1024 * 1024)}MB; Took: ${Math.round(performance.now() - start)}ms`
+      `Before: ${Math.round((resizedFrame.byteLength / 1024) * 1000) / 1000}kB; After: ${Math.round((new Uint8Array(pngBuffer!).byteLength / 1024) * 10) / 10}kB; Took: ${Math.round(performance.now() - start)}ms`
     );
   }, []);
-
   return (
     <View style={styles.container}>
       {permission.hasPermission && !!device && !!format && (

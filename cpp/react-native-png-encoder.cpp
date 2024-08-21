@@ -100,10 +100,28 @@ void installSequel(jsi::Runtime& jsiRuntime) {
         
         // Convert pngBuffer to a jsi::ArrayBuffer
         size_t pngSize = pngBuffer.size();
-        auto mutableBuffer = std::make_shared<vision::MutableRawBuffer>(pngSize);
-        std::memcpy(mutableBuffer->data(), pngBuffer.data(), pngSize);
-        jsi::ArrayBuffer arrayBuffer(runtime, mutableBuffer);
-        return arrayBuffer; // Return the ArrayBuffer to JavaScript
+        
+        
+        static constexpr auto ARRAYBUFFER_CACHE_PROP_NAME = "__pngArrayBufferCache";
+        
+        if (!runtime.global().hasProperty(runtime, ARRAYBUFFER_CACHE_PROP_NAME)) {
+          auto mutableBuffer = std::make_shared<vision::MutableRawBuffer>(pngSize);
+          jsi::ArrayBuffer arrayBuffer(runtime, mutableBuffer);
+          runtime.global().setProperty(runtime, ARRAYBUFFER_CACHE_PROP_NAME, std::move(arrayBuffer));
+        }
+        
+        auto arrayBufferCache = runtime.global().getPropertyAsObject(runtime, ARRAYBUFFER_CACHE_PROP_NAME);
+        auto arrayBuffer = arrayBufferCache.getArrayBuffer(runtime);
+
+        if (arrayBuffer.size(runtime) != pngSize) {
+          auto mutableBuffer = std::make_shared<vision::MutableRawBuffer>(pngSize);
+          arrayBuffer = jsi::ArrayBuffer(runtime, mutableBuffer);
+          runtime.global().setProperty(runtime, ARRAYBUFFER_CACHE_PROP_NAME, arrayBuffer);
+        }
+        
+        memcpy(arrayBuffer.data(runtime), pngBuffer.data(), pngSize);
+        
+        return arrayBuffer;
     }
   );
   // Registers the function on the global object
