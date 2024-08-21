@@ -2,7 +2,15 @@
 #include "react-native-png-encoder.h"
 
 extern "C"
-JNIEXPORT jdouble JNICALL
-Java_com_pngencoder_PngEncoderModule_nativeMultiply(JNIEnv *env, jclass type, jdouble a, jdouble b) {
-    return pngencoder::multiply(a, b);
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_pngencoder_PngEncoderModule_initialize(JNIEnv *env, jclass clazz, jlong jsiPtr)
+{
+  installSequel(*reinterpret_cast<facebook::jsi::Runtime *>(jsiPtr));
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_pngencoder_PngEncoderModule_destruct(JNIEnv *env, jclass clazz)
+{
+  cleanUpSequel();
 }
