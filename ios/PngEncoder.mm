@@ -30,7 +30,9 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
         return @false;
     }
 
-    installPngEncoder(*(facebook::jsi::Runtime *)cxxBridge.runtime);
+    auto tmpDir = [NSFileManager defaultManager].temporaryDirectory;
+    std::string cachePathStr = [tmpDir.path UTF8String];
+    installPngEncoder(*(facebook::jsi::Runtime *)cxxBridge.runtime,cachePathStr);
     return @true;
 }
 

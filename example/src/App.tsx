@@ -62,14 +62,13 @@ export default function App() {
       });
 
       const start = performance.now();
-      console.log('Size before', resizedFrame.byteLength / (1024 * 1024));
-      let pngBuffer: ArrayBufferLike = encode(
+      let pngFilePath: string = encode(
         resizedFrame.buffer,
         cropSquare.width,
         cropSquare.height
       );
       console.log(
-        `Before: ${Math.round((resizedFrame.byteLength / 1024) * 1000) / 1000}kB; After: ${Math.round((new Uint8Array(pngBuffer!).byteLength / 1024) * 10) / 10}kB; Took: ${Math.round(performance.now() - start)}ms`
+        `Took: ${Math.round(performance.now() - start)}ms to save to PNG at: ${pngFilePath}`
       );
     },
     [resize, encode]

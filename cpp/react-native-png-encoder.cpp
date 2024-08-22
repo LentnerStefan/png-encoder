@@ -4,12 +4,23 @@
 #include <iostream>
 #include <jsi/jsi.h>
 #include "fpng.h"
+#include <random>
 #include "MutableRawBuffer.h"
 // The namespace allows for syntactic sugar around the JSI objects. ex. call: jsi::Function instead of facebook::jsi::Function
 using namespace facebook;
 
+std::string generateRandomFileName() {
+    // Generate a random number
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<int> dist(100000, 999999);
+
+    // Create a file name with the random number
+    return "image_" + std::to_string(dist(mt)) + ".png";
+}
+
 // We get the runtime from the obj-c code and we create our native functions here
-void installPngEncoder(jsi::Runtime& jsiRuntime) {
+void installPngEncoder(jsi::Runtime& jsiRuntime, const std::string& cachePath) {
     fpng::fpng_init();
 
 auto encode = jsi::Function::createFromHostFunction(
@@ -19,7 +30,7 @@ auto encode = jsi::Function::createFromHostFunction(
                                                           // This is a C++ lambda function, the empty [] at the beginning is used to capture pointer/references so that they don't get de-allocated
                                                           // Then you get another instance of the runtime to use inside the function, a "this" value from the javascript world, a pointer to the arguments (you can treat it as an array) and finally a count for the number of arguments
                                                           // Finally the function needs to return a jsi::Value (read JavaScript value)
-                                                          [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
+                                                          [cachePath](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
                                                               if(!arguments[0].isObject()){
                                                                   throw jsi::JSError(runtime,"Invalid buffer parameter provided");
                                                               }
@@ -46,33 +57,17 @@ auto encode = jsi::Function::createFromHostFunction(
                                                                   throw jsi::JSError(runtime, "Invalid RGB buffer size");
                                                               }
 
+                                                              // Generate random file name and create full path
+                                                              std::string fileName = generateRandomFileName();
+                                                              std::string filePath = cachePath + "/" + fileName;
 
-                                                              // Convert to png in memory
-                                                              std::vector<uint8_t> pngBuffer;
-                                                              fpng::fpng_encode_image_to_memory(rgbData, width, height, channelCount, pngBuffer);
-
-
-                                                              // Start conversion to return as an ArrayBuffer on JS Land
-                                                              size_t pngSize = pngBuffer.size();
-                                                              static constexpr auto ARRAYBUFFER_CACHE_PROP_NAME = "__pngArrayBufferCache";
-
-                                                              if (!runtime.global().hasProperty(runtime, ARRAYBUFFER_CACHE_PROP_NAME)) {
-                                                                  auto mutableBuffer = std::make_shared<vision::MutableRawBuffer>(pngSize);
-                                                                  jsi::ArrayBuffer arrayBuffer(runtime, mutableBuffer);
-                                                                  runtime.global().setProperty(runtime, ARRAYBUFFER_CACHE_PROP_NAME, std::move(arrayBuffer));
+                                                              // Convert to PNG and save to file
+                                                              if (!fpng::fpng_encode_image_to_file(filePath.c_str(), rgbData, width, height, channelCount)) {
+                                                                  throw jsi::JSError(runtime, "Failed to encode PNG image to file");
                                                               }
 
-                                                              auto arrayBufferCache = runtime.global().getPropertyAsObject(runtime, ARRAYBUFFER_CACHE_PROP_NAME);
-                                                              auto arrayBuffer = arrayBufferCache.getArrayBuffer(runtime);
-
-                                                              if (arrayBuffer.size(runtime) != pngSize) {
-                                                                  auto mutableBuffer = std::make_shared<vision::MutableRawBuffer>(pngSize);
-                                                                  arrayBuffer = jsi::ArrayBuffer(runtime, mutableBuffer);
-                                                                  runtime.global().setProperty(runtime, ARRAYBUFFER_CACHE_PROP_NAME, arrayBuffer);
-                                                              }
-
-                                                              memcpy(arrayBuffer.data(runtime), pngBuffer.data(), pngSize);
-                                                              return arrayBuffer;
+                                                              // Return the file path to JavaScript
+                                                              return jsi::String::createFromUtf8(runtime, filePath);
                                                           }
                                                           );
     // Registers the function on the global object

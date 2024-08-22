@@ -2,11 +2,7 @@ import { PngEncoderModule } from './PngEncoderModule';
 
 declare global {
   //@ts-ignore
-  var encode: (
-    buffer: ArrayBuffer,
-    width: number,
-    height: number
-  ) => ArrayBuffer;
+  var encode: (buffer: ArrayBuffer, width: number, height: number) => string;
 }
 
 console.log('PngEncoder bindings installing ...');
@@ -22,7 +18,7 @@ export type Encode = (
   buffer: ArrayBuffer,
   width: number,
   height: number
-) => ArrayBuffer;
+) => string;
 
 export type UsePngEncoderType = () => {
   encode: Encode;
