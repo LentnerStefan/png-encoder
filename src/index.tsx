@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { PngEncoderModule } from './PngEncoderModule';
 
 declare global {
   const multiply: (
@@ -9,7 +9,7 @@ declare global {
 }
 
 console.log('PngEncoder bindings installing ...');
-const result = NativeModules.PngEncoder.install() as boolean;
+const result = PngEncoderModule.install() as boolean;
 
 if (!result) {
   console.error('PngEncoder bindings failed to install');

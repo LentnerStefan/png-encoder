@@ -15,20 +15,23 @@ RCT_EXPORT_MODULE()
   return YES;
 }
 
-- (void)setBridge:(RCTBridge *)bridge {
-  _bridge = bridge;
-  _setBridgeOnMainQueue = RCTIsMainQueue();
+// Installing JSI Bindings as done by
+// https://github.com/mrousavy/react-native-mmkv
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
+{
+    RCTBridge* bridge = [RCTBridge currentBridge];
+    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
+    if (cxxBridge == nil) {
+        return @false;
+    }
 
-  RCTCxxBridge *cxxBridge = (RCTCxxBridge *)self.bridge;
-  if (!cxxBridge.runtime) {
-    return;
-  }
+    auto jsiRuntime = (facebook::jsi::Runtime*) cxxBridge.runtime;
+    if (jsiRuntime == nil) {
+        return @false;
+    }
 
     installSequel(*(facebook::jsi::Runtime *)cxxBridge.runtime);
-}
-
-- (void)invalidate {
-  cleanUpSequel();
+    return @true;
 }
 
 @end
