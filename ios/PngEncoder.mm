@@ -30,7 +30,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
         return @false;
     }
 
-    installSequel(*(facebook::jsi::Runtime *)cxxBridge.runtime);
+    installPngEncoder(*(facebook::jsi::Runtime *)cxxBridge.runtime);
     return @true;
 }
 

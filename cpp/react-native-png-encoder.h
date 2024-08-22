@@ -3,7 +3,6 @@
 
 #include <jsi/jsi.h>
 
-void installSequel(facebook::jsi::Runtime& jsiRuntime);
-void cleanUpSequel();
+void installPngEncoder(facebook::jsi::Runtime& jsiRuntime);
 
 #endif /* PNGENCODER_H */

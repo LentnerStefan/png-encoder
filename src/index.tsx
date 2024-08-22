@@ -1,7 +1,7 @@
 import { PngEncoderModule } from './PngEncoderModule';
 
 declare global {
-  const multiply: (
+  const encode: (
     buffer: ArrayBuffer,
     width: number,
     height: number
@@ -18,5 +18,5 @@ if (!result) {
 console.log('PngEncoder bindings installed');
 
 export const usePngEncoder = () => {
-  return { multiply };
+  return { encode };
 };

@@ -9,12 +9,12 @@
 using namespace facebook;
 
 // We get the runtime from the obj-c code and we create our native functions here
-void installSequel(jsi::Runtime& jsiRuntime) {
+void installPngEncoder(jsi::Runtime& jsiRuntime) {
     fpng::fpng_init();
 
-auto multiply = jsi::Function::createFromHostFunction(
+auto encode = jsi::Function::createFromHostFunction(
                                                           jsiRuntime, // JSI runtime instance
-                                                          jsi::PropNameID::forAscii(jsiRuntime, "multiply"), // Internal function name
+                                                          jsi::PropNameID::forAscii(jsiRuntime, "encode"), // Internal function name
                                                           3, // Number of arguments in function
                                                           // This is a C++ lambda function, the empty [] at the beginning is used to capture pointer/references so that they don't get de-allocated
                                                           // Then you get another instance of the runtime to use inside the function, a "this" value from the javascript world, a pointer to the arguments (you can treat it as an array) and finally a count for the number of arguments
@@ -76,9 +76,5 @@ auto multiply = jsi::Function::createFromHostFunction(
                                                           }
                                                           );
     // Registers the function on the global object
-    jsiRuntime.global().setProperty(jsiRuntime, "multiply", std::move(multiply));
-}
-
-void cleanUpSequel() {
-    // intentionally left blank
+    jsiRuntime.global().setProperty(jsiRuntime, "encode", std::move(encode));
 }

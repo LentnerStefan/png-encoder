@@ -28,7 +28,7 @@ export default function App() {
   ]);
 
   const { resize } = useResizePlugin();
-  const { multiply } = usePngEncoder();
+  const { encode } = usePngEncoder();
 
   const frameProcessor = useFrameProcessor(
     (frame) => {
@@ -63,7 +63,7 @@ export default function App() {
 
       const start = performance.now();
       console.log('Size before', resizedFrame.byteLength / (1024 * 1024));
-      let pngBuffer: ArrayBufferLike = multiply(
+      let pngBuffer: ArrayBufferLike = encode(
         resizedFrame.buffer,
         cropSquare.width,
         cropSquare.height
@@ -72,7 +72,7 @@ export default function App() {
         `Before: ${Math.round((resizedFrame.byteLength / 1024) * 1000) / 1000}kB; After: ${Math.round((new Uint8Array(pngBuffer!).byteLength / 1024) * 10) / 10}kB; Took: ${Math.round(performance.now() - start)}ms`
       );
     },
-    [resize, multiply]
+    [resize, encode]
   );
   return (
     <View style={styles.container}>

@@ -10,15 +10,13 @@ npm install react-native-png-encoder
 
 ## Usage
 
-
 ```js
-import { multiply } from 'react-native-png-encoder';
+import { encode } from 'react-native-png-encoder';
 
 // ...
 
-const result = await multiply(3, 7);
+const result = encode(RGBBuffer);
 ```
-
 
 ## Contributing
 
