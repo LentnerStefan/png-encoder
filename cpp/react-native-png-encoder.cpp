@@ -1,21 +1,18 @@
 #include "react-native-png-encoder.h"
 // sstream contains functions to manipulate strings in C++
 #include <sstream>
+#include <iostream>
 #include <jsi/jsi.h>
 #include "fpng.h"
 #include "MutableRawBuffer.h"
-
 // The namespace allows for syntactic sugar around the JSI objects. ex. call: jsi::Function instead of facebook::jsi::Function
 using namespace facebook;
 
 // We get the runtime from the obj-c code and we create our native functions here
 void installSequel(jsi::Runtime& jsiRuntime) {
-
-    // Initialize fpng once, as stated in the doc: https://github.com/richgel999/fpng?tab=readme-ov-file#initialization
     fpng::fpng_init();
 
-    // jsi::Function::createFromHostFunction will create a JavaScript function based on a "host" (read C++) function
-    auto multiply = jsi::Function::createFromHostFunction(
+auto multiply = jsi::Function::createFromHostFunction(
                                                           jsiRuntime, // JSI runtime instance
                                                           jsi::PropNameID::forAscii(jsiRuntime, "multiply"), // Internal function name
                                                           3, // Number of arguments in function

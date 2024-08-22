@@ -2,16 +2,16 @@ package com.pngencoder;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.JavaScriptContextHolder;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.bridge.ReactMethod;
 
+@ReactModule(name = PngEncoderModule.NAME)
 class PngEncoderModule extends ReactContextBaseJavaModule {
-  static {
-    System.loadLibrary("pngencoder");
-  }
-
-  private static native void initialize(long jsiPtr);
-  private static native void destruct();
+  public static final String NAME = "PngEncoder";
+  private  native void initialize(long jsiPtr);
 
   public PngEncoderModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -23,19 +23,17 @@ class PngEncoderModule extends ReactContextBaseJavaModule {
     return "PngEncoder";
   }
 
-
-  @NonNull
-  @Override
-  public void initialize() {
-    super.initialize();
-
-    PngEncoderModule.initialize(
-      this.getReactApplicationContext().getJavaScriptContextHolder().get()
-    );
-  }
-
-  @Override
-  public void onCatalystInstanceDestroy() {
-    PngEncoderModule.destruct();
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public boolean install() {
+    try {
+      System.loadLibrary("pngencoder");
+      ReactApplicationContext context = getReactApplicationContext();
+      initialize(
+        context.getJavaScriptContextHolder().get()
+      );
+      return true;
+    } catch (Exception exception) {
+      return false;
+    }
   }
 }
