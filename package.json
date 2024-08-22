@@ -1,6 +1,6 @@
 {
   "name": "react-native-png-encoder",
-  "version": "0.2.0-beta.0",
+  "version": "0.2.0-beta.1",
   "description": "png encoder",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
