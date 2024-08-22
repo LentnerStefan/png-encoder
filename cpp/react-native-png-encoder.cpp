@@ -5,7 +5,6 @@
 #include <jsi/jsi.h>
 #include "fpng.h"
 #include <random>
-#include "MutableRawBuffer.h"
 // The namespace allows for syntactic sugar around the JSI objects. ex. call: jsi::Function instead of facebook::jsi::Function
 using namespace facebook;
 
