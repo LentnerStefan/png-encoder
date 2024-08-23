@@ -1,29 +1,34 @@
-import { PngEncoderModule } from './PngEncoderModule';
+import { NativeModules, Platform } from 'react-native';
 
-declare global {
-  //@ts-ignore
-  var encode: (buffer: ArrayBuffer, width: number, height: number) => string;
-}
+const LINKING_ERROR =
+  "The package 'react-native-png-encoder' doesn't seem to be linked. Make sure: \n\n" +
+  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+  '- You rebuilt the app after installing the package\n' +
+  '- You are not using Expo Go\n';
 
-console.log('PngEncoder bindings installing ...');
-const result = PngEncoderModule.install() as boolean;
+const PngEncoderModule =
+  NativeModules.PngEncoder != null
+    ? NativeModules.PngEncoder
+    : new Proxy(
+        {},
+        {
+          get() {
+            throw new Error(LINKING_ERROR);
+          },
+        }
+      );
 
-if (!result) {
+const installResult = PngEncoderModule.install() as boolean;
+if (!installResult) {
   console.error('PngEncoder bindings failed to install');
 }
+console.log('PngEncoder bindings installed!');
 
-console.log('PngEncoder bindings installed');
-
-export type Encode = (
+export type EncodeFunction = (
   buffer: ArrayBuffer,
   width: number,
   height: number
 ) => string;
 
-export type UsePngEncoderType = () => {
-  encode: Encode;
-};
-
-export const usePngEncoder: UsePngEncoderType = () => {
-  return { encode };
-};
+//@ts-ignore
+export const encodePNG: EncodeFunction = encode;
