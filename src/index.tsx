@@ -32,4 +32,9 @@ export type SaveRgbAsPngFunction = (
 ) => string;
 
 //@ts-ignore
-export const saveRgbAsPng: EncodeFunction = __saveRgbAsPng;
+export const saveRgbAsPng: SaveRgbAsPngFunction = __saveRgbAsPng;
+
+export type DeleteCacheFilesFunction = () => number;
+
+//@ts-ignore
+export const deleteCacheFiles: DeleteCacheFilesFunction = __deleteCacheFiles;

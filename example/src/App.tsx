@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { saveRgbAsPng } from 'react-native-png-encoder';
+import { saveRgbAsPng, deleteCacheFiles } from 'react-native-png-encoder';
 import { useResizePlugin } from 'vision-camera-resize-plugin';
 import {
   useCameraPermission,
@@ -9,10 +9,20 @@ import {
   Camera,
   useFrameProcessor,
 } from 'react-native-vision-camera';
+import { useAppState } from './useAppState';
 
 export default function App() {
   // TODO, remove me
   const permission = useCameraPermission();
+  const appState = useAppState();
+
+  useEffect(() => {
+    if (appState !== 'active') {
+      return;
+    }
+    const deletedFiles = deleteCacheFiles();
+    console.log(`Deleted ${deletedFiles} cached files`);
+  }, [appState]);
 
   useEffect(() => {
     permission.requestPermission();
@@ -77,7 +87,7 @@ export default function App() {
       {permission.hasPermission && !!device && !!format && (
         <Camera
           style={styles.camera}
-          isActive
+          isActive={appState === 'active'}
           enableFpsGraph
           device={device}
           format={format}
