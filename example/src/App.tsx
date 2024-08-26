@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { usePngEncoder } from 'react-native-png-encoder';
+import { saveRgbAsPng } from 'react-native-png-encoder';
 import { useResizePlugin } from 'vision-camera-resize-plugin';
 import {
   useCameraPermission,
@@ -28,7 +28,6 @@ export default function App() {
   ]);
 
   const { resize } = useResizePlugin();
-  const { encode } = usePngEncoder();
 
   const frameProcessor = useFrameProcessor(
     (frame) => {
@@ -62,7 +61,7 @@ export default function App() {
       });
 
       const start = performance.now();
-      let pngFilePath: string = encode(
+      let pngFilePath: string = saveRgbAsPng(
         resizedFrame.buffer,
         cropSquare.width,
         cropSquare.height
@@ -71,7 +70,7 @@ export default function App() {
         `Took: ${Math.round(performance.now() - start)}ms to save to PNG at: ${pngFilePath}`
       );
     },
-    [resize, encode]
+    [resize]
   );
   return (
     <View style={styles.container}>

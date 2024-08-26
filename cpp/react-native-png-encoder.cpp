@@ -1,30 +1,33 @@
-#include "react-native-png-encoder.h"
-// sstream contains functions to manipulate strings in C++
-#include <sstream>
-#include <iostream>
+#include <chrono>    
+#include <sstream>  
 #include <jsi/jsi.h>
-#include "fpng.h"
-#include <random>
+#include "react-native-png-encoder.h"
+#include "fpng.h"    
+
+
 // The namespace allows for syntactic sugar around the JSI objects. ex. call: jsi::Function instead of facebook::jsi::Function
 using namespace facebook;
 
-std::string generateRandomFileName() {
-    // Generate a random number
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> dist(100000, 999999);
+std::string generateTimestampFileName() {
+    // Get the current time as a time_point
+    auto now = std::chrono::system_clock::now();
 
-    // Create a file name with the random number
-    return "image_" + std::to_string(dist(mt)) + ".png";
+    // Convert to milliseconds since epoch
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+    // Create a file name using the timestamp
+    std::stringstream ss;
+    ss << "image_" << ms << ".png";
+    return ss.str();
 }
 
 // We get the runtime from the obj-c code and we create our native functions here
 void installPngEncoder(jsi::Runtime& jsiRuntime, const std::string& cachePath) {
     fpng::fpng_init();
 
-auto encode = jsi::Function::createFromHostFunction(
+auto func = jsi::Function::createFromHostFunction(
                                                           jsiRuntime, // JSI runtime instance
-                                                          jsi::PropNameID::forAscii(jsiRuntime, "encode"), // Internal function name
+                                                          jsi::PropNameID::forAscii(jsiRuntime, "__saveRgbAsPng"), // Internal function name
                                                           3, // Number of arguments in function
                                                           // This is a C++ lambda function, the empty [] at the beginning is used to capture pointer/references so that they don't get de-allocated
                                                           // Then you get another instance of the runtime to use inside the function, a "this" value from the javascript world, a pointer to the arguments (you can treat it as an array) and finally a count for the number of arguments
@@ -57,7 +60,7 @@ auto encode = jsi::Function::createFromHostFunction(
                                                               }
 
                                                               // Generate random file name and create full path
-                                                              std::string fileName = generateRandomFileName();
+                                                              std::string fileName = generateTimestampFileName();
                                                               std::string filePath = cachePath + "/" + fileName;
 
                                                               // Convert to PNG and save to file
@@ -70,5 +73,5 @@ auto encode = jsi::Function::createFromHostFunction(
                                                           }
                                                           );
     // Registers the function on the global object
-    jsiRuntime.global().setProperty(jsiRuntime, "encode", std::move(encode));
+    jsiRuntime.global().setProperty(jsiRuntime, "__saveRgbAsPng", std::move(func));
 }

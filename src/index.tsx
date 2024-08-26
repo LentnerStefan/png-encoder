@@ -19,16 +19,17 @@ const PngEncoderModule =
       );
 
 const installResult = PngEncoderModule.install() as boolean;
+
 if (!installResult) {
   console.error('PngEncoder bindings failed to install');
 }
 console.log('PngEncoder bindings installed!');
 
-export type EncodeFunction = (
+export type SaveRgbAsPngFunction = (
   buffer: ArrayBuffer,
   width: number,
   height: number
 ) => string;
 
 //@ts-ignore
-export const encodePNG: EncodeFunction = encode;
+export const saveRgbAsPng: EncodeFunction = __saveRgbAsPng;
