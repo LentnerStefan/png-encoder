@@ -12,6 +12,7 @@ import java.io.File;
 @ReactModule(name = PngEncoderModule.NAME)
 class PngEncoderModule extends ReactContextBaseJavaModule {
   public static final String NAME = "PngEncoder";
+  private String pngCacheSubFolder = "pngEncoder";
   private  native void initialize(long jsiPtr, String cachePath);
 
   public PngEncoderModule(ReactApplicationContext reactContext) {
@@ -33,9 +34,20 @@ class PngEncoderModule extends ReactContextBaseJavaModule {
       File cacheDir = context.getCacheDir();
       String cachePath = cacheDir.getAbsolutePath();
 
+      // Append the subfolder to the cache path
+      File pngCacheDir = new File(cachePath, pngCacheSubFolder);
+
+      // Create the directory if it doesn't exist
+      if (!pngCacheDir.exists()) {
+        boolean created = pngCacheDir.mkdirs();
+        if (!created) {
+          return false;  // Failed to create the directory
+        }
+      }
+
       initialize(
         context.getJavaScriptContextHolder().get(),
-        cachePath
+        pngCacheDir.getAbsolutePath()
       );
       return true;
     } catch (Exception exception) {
