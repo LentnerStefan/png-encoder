@@ -34,6 +34,15 @@ export type SaveRgbAsPngFunction = (
 //@ts-ignore
 export const saveRgbAsPng: SaveRgbAsPngFunction = __saveRgbAsPng;
 
+export type DetectFromRgbFunction = (
+  buffer: ArrayBuffer,
+  width: number,
+  height: number
+) => string;
+
+//@ts-ignore
+export const detectFromRgb: DetectFromRgbFunction = __detectFromRgb;
+
 export type DeleteCacheFilesFunction = () => number;
 
 //@ts-ignore

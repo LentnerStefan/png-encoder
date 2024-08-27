@@ -21,6 +21,7 @@
   "files": [
     "src",
     "lib",
+    "zxing-cpp",
     "android",
     "ios",
     "cpp",

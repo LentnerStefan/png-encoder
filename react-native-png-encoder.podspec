@@ -14,7 +14,16 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => min_ios_version_supported }
   s.source       = { :git => "https://github.com/LentnerStefan/react-native-png-encoder.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,c,h}"
+  s.compiler_flags = '-DZXING_READERS'
+  
+  s.pod_target_xcconfig = {
+    'CLANG_CXX_LANGUAGE_STANDARD' => 'c++20'
+  }
+
+  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,c,h}", "zxing-cpp/core/src/**/*.{h,c,cpp}"
+  s.exclude_files = ['zxing-cpp/core/src/libzint/**']
+  s.header_dir="ZXing"
+  s.private_header_files = 'zxing-cpp/core/src/**/*.h'
 
   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
   # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
