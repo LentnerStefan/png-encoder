@@ -20,6 +20,13 @@ Pod::Spec.new do |s|
     'CLANG_CXX_LANGUAGE_STANDARD' => 'c++20'
   }
 
+  # s.compiler_flags = '-DZXING_READERS -DZXING_EXPERIMENTAL_API'
+  
+  # s.pod_target_xcconfig = {
+  #   'CLANG_CXX_LANGUAGE_STANDARD' => 'c++20',
+  #   "OTHER_CFLAGS" => "$(inherited) -DZXING_READERS -DZXING_EXPERIMENTAL_API"
+  # }
+
   s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,c,h}", "zxing-cpp/core/src/**/*.{h,c,cpp}"
   s.exclude_files = ['zxing-cpp/core/src/libzint/**']
   s.header_dir="ZXing"

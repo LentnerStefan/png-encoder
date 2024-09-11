@@ -62,6 +62,7 @@ void installPngEncoder(jsi::Runtime& jsiRuntime, const std::string& cachePath) {
                                                                           throw jsi::JSError(runtime, "Invalid RGB buffer size");
                                                                       }
                                                                       
+                                                                      
                                                                       auto image = ZXing::ImageView(rgbData, width, height, ZXing::ImageFormat::RGB);
                                                                       auto options = ZXing::ReaderOptions().setFormats(ZXing::BarcodeFormat::QRCode);
                                                                       auto barcodes = ZXing::ReadBarcodes(image, options);
